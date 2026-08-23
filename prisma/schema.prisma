@@ -1,0 +1,70 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  HOST
+  GUEST
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(GUEST)
+  avatarUrl String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  spaces   Space[]   @relation("HostSpaces")
+  bookings Booking[] @relation("GuestBookings")
+
+  @@map("users")
+}
+
+model Space {
+  id            String   @id @default(uuid())
+  title         String
+  description   String   @db.Text
+  pricePerNight Decimal  @db.Decimal(10, 2)
+  location      String
+  capacity      Int
+  features      Json
+  images        Json
+  hostId        String
+  host          User     @relation("HostSpaces", fields: [hostId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  bookings Booking[]
+
+  @@map("spaces")
+}
+
+model Booking {
+  id         String        @id @default(uuid())
+  spaceId    String
+  space      Space         @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  guestId    String
+  guest      User          @relation("GuestBookings", fields: [guestId], references: [id], onDelete: Cascade)
+  startDate  DateTime
+  endDate    DateTime
+  totalPrice Decimal       @db.Decimal(10, 2)
+  status     BookingStatus @default(CONFIRMED)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@map("bookings")
+}
