@@ -13,7 +13,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma db push",
+    "prisma:migrate": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "generate:zip": "node generate_backend.js",
     "test": "jest",
