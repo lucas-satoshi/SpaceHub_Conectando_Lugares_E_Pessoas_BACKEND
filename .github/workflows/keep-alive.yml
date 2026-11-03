@@ -1,0 +1,32 @@
+name: Supabase & Render Keep-Alive
+
+on:
+  schedule:
+    # Executa a cada 12 horas (00:00 e 12:00 UTC) para manter o banco ativo e aquecer o servidor
+    - cron: '0 0,12 * * *'
+  workflow_dispatch: # Permite disparar o workflow manualmente pela interface do GitHub Actions
+
+jobs:
+  keep-alive:
+    name: Ping Database & Backend
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: 📥 Clonar repositório
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Instalar driver PostgreSQL
+        run: npm install pg --no-save
+
+      - name: 🚀 Executar script de Keep-Alive
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+          RENDER_BACKEND_URL: ${{ secrets.RENDER_BACKEND_URL || 'https://spacehub-backend-9gih.onrender.com' }}
+        run: node scripts/keep-alive.js

@@ -17,6 +17,7 @@
     "prisma:migrate": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "generate:zip": "node generate_backend.js",
+    "keep-alive": "node scripts/keep-alive.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
