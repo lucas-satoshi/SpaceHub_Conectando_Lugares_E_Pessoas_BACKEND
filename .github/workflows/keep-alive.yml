@@ -19,7 +19,7 @@ jobs:
       - name: ⚙️ Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: 📦 Instalar driver PostgreSQL
         run: npm install pg --no-save
@@ -30,3 +30,4 @@ jobs:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
           RENDER_BACKEND_URL: ${{ secrets.RENDER_BACKEND_URL || 'https://spacehub-backend-9gih.onrender.com' }}
         run: node scripts/keep-alive.js
+
