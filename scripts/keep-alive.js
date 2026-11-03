@@ -24,7 +24,7 @@ async function pingDatabase() {
   }
 
   // Ocultar a senha no log para manter a segurança
-  const maskedUrl = connectionString.replace(/:(.*?)@/, ':******@');
+  const maskedUrl = connectionString.replace(/:\/\/([^:]+):([^@]+)@/, '://$1:******@');
   console.log(`🔄 Conectando ao PostgreSQL em: ${maskedUrl}`);
 
   const client = new Client({
@@ -62,7 +62,7 @@ async function pingBackend() {
     const response = await fetch(backendUrl, {
       method: 'GET',
       headers: { 'User-Agent': 'SpaceHub-KeepAlive-Bot/1.0' },
-      signal: AbortSignal.timeout(30000), // timeout de 30s para acomodar cold start do Render
+      signal: AbortSignal.timeout(45000), // timeout de 45s para acomodar cold start do Render
     });
 
     const body = await response.text();
