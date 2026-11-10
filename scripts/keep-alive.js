@@ -45,7 +45,7 @@ async function runDatabaseKeepAlive() {
     await client.connect();
     console.log('✅ Conexão com o banco estabelecida com sucesso!');
 
-    // 1. Criação/garantia da tabela de controle (atividade de schema)
+    // 1. Criação/garantia da tabela de controle (atividade de schema e RLS)
     await client.query(`
       CREATE TABLE IF NOT EXISTS public._keep_alive (
         id INT PRIMARY KEY,
@@ -54,6 +54,7 @@ async function runDatabaseKeepAlive() {
         origem VARCHAR(50) NOT NULL DEFAULT 'github_actions',
         detalhes TEXT
       );
+      ALTER TABLE public._keep_alive ENABLE ROW LEVEL SECURITY;
     `);
 
     // 2. Escrita real via UPSERT (gera WAL, grava dados no disco e atualiza pg_stat_user_tables)
